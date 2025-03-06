@@ -1,0 +1,25 @@
+<!-- website/templates/website/home.html -->
+{% extends 'website/base.html' %}
+
+{% block title %}Home Page - My Website{% endblock %}
+
+{% block content %}
+<div class="col-md-6 offset-md-3">
+    {% if user.is_authenticated %}
+        <h1>Hello world</h1>
+    {% else %}
+        <h1>Login</h1>
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" class="form-control" name="username" placeholder="Username">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-secondary">Login</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
