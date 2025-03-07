@@ -4,6 +4,33 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from website.models import Record
 from website.forms import SignupForm
+import requests
+
+GOOGLE_NEWS_API_KEY = '31dbd5d65ff7e02e8b65d85cf68afd08'  # Replace with your API key
+
+def fetch_news():
+    """
+    Fetches latest news articles using GNews API.
+    """
+    url = f"https://gnews.io/api/v4/top-headlines?lang=en&country=us&max=10&apikey=31dbd5d65ff7e02e8b65d85cf68afd08"
+
+    try:
+        response = requests.get(url)
+        data = response.json()
+
+        # Debugging output
+        print("API Response:", data)
+
+        if "articles" in data:  # GNews does not have a "status" field
+            return data["articles"]  # Return list of articles
+        else:
+            print("Error: Unexpected API response structure:", data)
+
+    except Exception as e:
+        print(f"Error fetching news: {e}")
+
+    return []  # Return empty list on error
+
 
 def home(request):
     """
@@ -12,15 +39,20 @@ def home(request):
     """
     logged_in_record = get_logged_in_record(request)
     if logged_in_record:
-        # User is "logged in" via the Record model
         records = Record.objects.all()
     else:
-        # No one is logged in, so no records to show
         records = []
+
+    # Fetch news articles
+    news_articles = fetch_news()
+
+    # Print for debugging
+    print("News Articles:", news_articles)
 
     return render(request, 'website/home.html', {
         'records': records,
-        'record_logged_in': logged_in_record,  # Pass the current logged-in record to the template if needed
+        'record_logged_in': logged_in_record,
+        'news_articles': news_articles,  # Pass news articles to template
     })
 
 def login_user(request):
@@ -56,7 +88,7 @@ def logout_user(request):
     """
     if 'record_id' in request.session:
         del request.session['record_id']
-    messages.success(request, 'You have been logged out from Record model.')
+    messages.success(request, 'You have been logged out.')
     return redirect('home')
 
 def dashboard(request):
@@ -102,3 +134,4 @@ def get_logged_in_record(request):
         except Record.DoesNotExist:
             pass
     return None
+

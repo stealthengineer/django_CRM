@@ -10,7 +10,109 @@
 
     <!-- If user is "logged in" via a custom Record session -->
     {% if record_logged_in %}
-        <h1>Records</h1>
+    <h2 class="news-header">Latest News</h2>
+
+          {% if news_articles %}
+              <div class="news-container">
+                  {% for article in news_articles %}
+                      <div class="news-card">
+                          {% if article.image %}
+                              <img src="{{ article.image }}" alt="News Image" class="news-image">
+                          {% else %}
+                              <div class="news-placeholder">No Image</div>
+                          {% endif %}
+                          <div class="news-content">
+                              <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
+                              {% if article.source_name %}
+                                  <p class="news-source">Source: {{ article.source_name }}</p>
+                              {% endif %}
+                              {% if article.published_at %}
+                                  <p class="news-date">Published: {{ article.published_at }}</p>
+                              {% endif %}
+                          </div>
+                      </div>
+                  {% endfor %}
+              </div>
+          {% else %}
+              <p class="no-news">No news available at the moment.</p>
+          {% endif %}
+
+          <style>
+              .news-header {
+                  font-size: 24px;
+                  text-align: center;
+                  margin-bottom: 20px;
+              }
+
+              .news-container {
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                  gap: 20px;
+                  padding: 20px;
+              }
+
+              .news-card {
+                  border: 1px solid #ddd;
+                  border-radius: 10px;
+                  overflow: hidden;
+                  background: #fff;
+                  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                  transition: transform 0.3s ease-in-out;
+              }
+
+              .news-card:hover {
+                  transform: scale(1.05);
+              }
+
+              .news-image {
+                  width: 100%;
+                  height: 180px;
+                  object-fit: cover;
+              }
+
+              .news-placeholder {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 180px;
+                  background: #f0f0f0;
+                  color: #888;
+                  font-size: 14px;
+              }
+
+              .news-content {
+                  padding: 15px;
+              }
+
+              .news-content h3 {
+                  font-size: 18px;
+                  margin: 0;
+                  padding-bottom: 10px;
+              }
+
+              .news-content a {
+                  text-decoration: none;
+                  color: #007bff;
+              }
+
+              .news-content a:hover {
+                  text-decoration: underline;
+              }
+
+              .news-source, .news-date {
+                  font-size: 12px;
+                  color: #666;
+                  margin-top: 5px;
+              }
+
+              .no-news {
+                  text-align: center;
+                  font-size: 16px;
+                  color: #666;
+              }
+          </style>
+
+    <h1>Records</h1>
 
         {% if records %}
             <table class="table table-striped table-hover table-bordered align-middle">
