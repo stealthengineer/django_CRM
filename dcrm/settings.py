@@ -78,12 +78,12 @@ WSGI_APPLICATION = 'dcrm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        'USER': 'root',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'my_new_db',
+        'USER': 'jungmindl',
         'PASSWORD': 'Wjdals@1129',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': 'localhost',  # or the MySQL server address
+        'PORT': '3306',  # Default MySQL port
     }
 }
 
@@ -122,7 +122,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "dcrm", "static"),  # ✅ Ensure this folder exists
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

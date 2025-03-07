@@ -1,12 +1,65 @@
+<!-- website/templates/website/dashboard.html -->
 {% extends 'website/base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}
+  Dashboard
+{% endblock %}
 
-{% block header %}Welcome, {{ user.username }}{% endblock %}
+{% block header %}
+  {% if record_logged_in %}
+    Welcome, {{ record_logged_in.username }}
+  {% else %}
+    Dashboard
+  {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="container text-center">
-    <h2 class="mb-4">Hello World!</h2>
-    <p>You are logged in as {{ user.username }}</p>
+  {% if record_logged_in %}
+    <h2 class="mb-4">Hello {{ record_logged_in.username }}!</h2>
+    <p>You are logged in as {{ record_logged_in.username }}</p>
+
+    <h1>Our Records show...</h1>
+    {% if records %}
+     <table class="table table-striped table-hover table-bordered align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Address</th>
+          <th scope="col">City</th>
+          <th scope="col">State</th>
+          <th scope="col">Zip</th>
+          <th scope="col">Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in records %}
+          <tr>
+            <th scope="row">{{ record.id }}</th>
+            <td>{{ record.first_name }}</td>
+            <td>{{ record.last_name }}</td>
+            <td>{{ record.email }}</td>
+            <td>{{ record.phone }}</td>
+            <td>{{ record.address }}</td>
+            <td>{{ record.city }}</td>
+            <td>{{ record.state }}</td>
+            <!-- If your model field is named 'zip_code' instead of 'zip', adjust accordingly -->
+            <td>{{ record.zip_code }}</td>
+            <td>{{ record.created_at }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+     </table>
+    {% else %}
+      <p>No records found.</p>
+    {% endif %}
+  {% else %}
+    <h2>You are not logged in.</h2>
+    <p><a href="{% url 'home' %}">Go to Home</a> to log in first.</p>
+  {% endif %}
 </div>
 {% endblock %}

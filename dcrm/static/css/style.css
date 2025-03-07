@@ -1,0 +1,11 @@
+.dark-emerald {
+    color: #046307 !important; /* Dark Emerald Color */
+}
+.very-light-emerald {
+    color: #B5F0C2 !important; /* Very Light Emerald */
+}
+.register-card {
+    background-color: #f9f9ff;
+    border-radius: 10px;
+    border: 2px solid #d3d3d3;
+  }
