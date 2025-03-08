@@ -1,33 +1,41 @@
-# dcrm/views.py
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from website.models import Record
 from website.forms import SignupForm
 import requests
+from django.http import JsonResponse
 
-GOOGLE_NEWS_API_KEY = '31dbd5d65ff7e02e8b65d85cf68afd08'  # Replace with your API key
+def get_chat_message(request):
+    return JsonResponse({
+        "message": "Hello! This is a ChatGPT-style response from Django."
+    })
+
+GNEWS_API_KEY = "31dbd5d65ff7e02e8b65d85cf68afd08"  # Replace with your actual API key
 
 def fetch_news():
     """
-    Fetches latest news articles using GNews API.
+    Fetches news articles using GNews API.
     """
     url = f"https://gnews.io/api/v4/top-headlines?lang=en&country=us&max=10&apikey=31dbd5d65ff7e02e8b65d85cf68afd08"
 
     try:
         response = requests.get(url)
-        data = response.json()
+        print("Status Code:", response.status_code)  # Debugging
 
-        # Debugging output
-        print("API Response:", data)
+        if response.status_code == 200:
+            data = response.json()
+            print("API Response:", data)  # Debugging output
 
-        if "articles" in data:  # GNews does not have a "status" field
-            return data["articles"]  # Return list of articles
+            # Check if "articles" exists in response instead of "data"
+            if "articles" in data and isinstance(data["articles"], list):
+                return data["articles"]  # Return the articles list
+
+            print("Error: Unexpected API response structure. Check if 'articles' key exists.", data)
         else:
-            print("Error: Unexpected API response structure:", data)
+            print("Error: API request failed with status", response.status_code, response.text)
 
-    except Exception as e:
-        print(f"Error fetching news: {e}")
+    except requests.exceptions.RequestException as e:
+        print(f"Request error: {e}")
 
     return []  # Return empty list on error
 
@@ -46,13 +54,17 @@ def home(request):
     # Fetch news articles
     news_articles = fetch_news()
 
-    # Print for debugging
+    # Debugging output
     print("News Articles:", news_articles)
+
+    # Dynamic text for the typing effect
+    dynamic_text = "Welcome to Crene! Your one-stop solution for managing records and news updates."
 
     return render(request, 'website/home.html', {
         'records': records,
         'record_logged_in': logged_in_record,
         'news_articles': news_articles,  # Pass news articles to template
+        'dynamic_text': dynamic_text  # Pass dynamic text for typing effect
     })
 
 def login_user(request):
@@ -134,4 +146,3 @@ def get_logged_in_record(request):
         except Record.DoesNotExist:
             pass
     return None
-

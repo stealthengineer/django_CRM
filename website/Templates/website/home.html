@@ -1,4 +1,3 @@
-<!-- website/templates/website/home.html -->
 {% extends 'website/base.html' %}
 
 {% block title %}
@@ -6,154 +5,47 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-md-6 offset-md-3">
+<div class="col-md-10 offset-md-1">
 
-    <!-- If user is "logged in" via a custom Record session -->
+    <!-- Typing Effect Section -->
+    <div class="chat-container">
+        <h3 class="typing-text" data-text="{{ dynamic_text }}">{{ dynamic_text }}</h3>
+    </div>
+
     {% if record_logged_in %}
-    <h2 class="news-header">Latest News</h2>
+        <h2 class="news-header typing-text" data-text="Latest News">Latest News</h2>
 
-          {% if news_articles %}
-              <div class="news-container">
-                  {% for article in news_articles %}
-                      <div class="news-card">
-                          {% if article.image %}
-                              <img src="{{ article.image }}" alt="News Image" class="news-image">
-                          {% else %}
-                              <div class="news-placeholder">No Image</div>
-                          {% endif %}
-                          <div class="news-content">
-                              <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
-                              {% if article.source_name %}
-                                  <p class="news-source">Source: {{ article.source_name }}</p>
-                              {% endif %}
-                              {% if article.published_at %}
-                                  <p class="news-date">Published: {{ article.published_at }}</p>
-                              {% endif %}
-                          </div>
-                      </div>
-                  {% endfor %}
-              </div>
-          {% else %}
-              <p class="no-news">No news available at the moment.</p>
-          {% endif %}
+        {% if news_articles %}
+            <div class="news-container">
+                {% for article in news_articles|slice:":50" %}  <!-- Limit to 50 articles -->
+                    <div class="news-card">
+                        <!-- Image Container -->
+                        {% if article.image %}
+                            <div class="news-image-container">
+                                <img src="{{ article.image }}" alt="News Image" class="news-image fade-img">
+                            </div>
+                        {% else %}
+                            <div class="news-placeholder">No Image</div>
+                        {% endif %}
 
-          <style>
-              .news-header {
-                  font-size: 24px;
-                  text-align: center;
-                  margin-bottom: 20px;
-              }
-
-              .news-container {
-                  display: grid;
-                  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                  gap: 20px;
-                  padding: 20px;
-              }
-
-              .news-card {
-                  border: 1px solid #ddd;
-                  border-radius: 10px;
-                  overflow: hidden;
-                  background: #fff;
-                  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-                  transition: transform 0.3s ease-in-out;
-              }
-
-              .news-card:hover {
-                  transform: scale(1.05);
-              }
-
-              .news-image {
-                  width: 100%;
-                  height: 180px;
-                  object-fit: cover;
-              }
-
-              .news-placeholder {
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  height: 180px;
-                  background: #f0f0f0;
-                  color: #888;
-                  font-size: 14px;
-              }
-
-              .news-content {
-                  padding: 15px;
-              }
-
-              .news-content h3 {
-                  font-size: 18px;
-                  margin: 0;
-                  padding-bottom: 10px;
-              }
-
-              .news-content a {
-                  text-decoration: none;
-                  color: #007bff;
-              }
-
-              .news-content a:hover {
-                  text-decoration: underline;
-              }
-
-              .news-source, .news-date {
-                  font-size: 12px;
-                  color: #666;
-                  margin-top: 5px;
-              }
-
-              .no-news {
-                  text-align: center;
-                  font-size: 16px;
-                  color: #666;
-              }
-          </style>
-
-    <h1>Records</h1>
-
-        {% if records %}
-            <table class="table table-striped table-hover table-bordered align-middle">
-                <thead class="table-dark">
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">City</th>
-                    <th scope="col">State</th>
-                    <th scope="col">Zip</th>
-                    <th scope="col">Created At</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for record in records %}
-                    <tr>
-                      <th scope="row">{{ record.id }}</th>
-                      <td>{{ record.first_name }}</td>
-                      <td>{{ record.last_name }}</td>
-                      <td>{{ record.email }}</td>
-                      <td>{{ record.phone }}</td>
-                      <td>{{ record.address }}</td>
-                      <td>{{ record.city }}</td>
-                      <td>{{ record.state }}</td>
-                      <!-- If your model field is named 'zip_code' instead of 'zip', adjust accordingly -->
-                      <td>{{ record.zip_code }}</td>
-                      <td>{{ record.created_at }}</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+                        <!-- News Content -->
+                        <div class="news-content">
+                            <h3><a href="{{ article.url }}" target="_blank" class="news-title typing-text" data-text="{{ article.title }}">{{ article.title }}</a></h3>
+                            {% if article.source_name %}
+                                <p class="news-source typing-text" data-text="Source: {{ article.source_name }}">Source: {{ article.source_name }}</p>
+                            {% endif %}
+                            {% if article.published_at %}
+                                <p class="news-date typing-text" data-text="Published: {{ article.published_at }}">Published: {{ article.published_at }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
-            <p>No records found.</p>
+            <p class="no-news typing-text" data-text="No news available at the moment.">No news available at the moment.</p>
         {% endif %}
-
     {% else %}
-        <!-- Not logged in, show login form -->
+        <!-- Not Logged In: Show Login Form -->
         <h1>Login</h1>
         <form method="POST" action="{% url 'login' %}">
             {% csrf_token %}
@@ -181,4 +73,164 @@
     {% endif %}
 
 </div>
+
+<!-- JavaScript for Typing Effect & Image Handling -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const elements = document.querySelectorAll(".typing-text");
+        let currentIndex = 0;
+
+        function applyEffects() {
+            if (elements.length === 0) return;
+
+            let currentElement = elements[currentIndex];
+            const text = currentElement.getAttribute("data-text");
+            currentElement.innerHTML = "";
+
+            typeWriterEffect(currentElement, text, 50, () => {
+                currentIndex = (currentIndex + 1) % elements.length;
+                setTimeout(applyEffects, 1000);
+            });
+        }
+
+        function typeWriterEffect(element, text, speed = 50, callback) {
+            let index = 0;
+            function typeChar() {
+                if (index < text.length) {
+                    element.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            typeChar();
+        }
+
+        // Fade-in Images (But Keep Them Visible)
+        const images = document.querySelectorAll(".fade-img");
+        images.forEach((img, index) => {
+            setTimeout(() => {
+                img.style.opacity = "1";
+            }, index * 500);
+        });
+
+        // Start the text effect
+        applyEffects();
+    });
+</script>
+
+<!-- CSS for Layout (5 Articles per Row & Responsive Design) -->
+<style>
+    .chat-container {
+        width: 100%;
+        max-width: 800px;
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Grid Layout: 5 Articles per Row */
+    .news-container {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 5 columns */
+        gap: 10px;
+        padding: 20px;
+    }
+
+    .news-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        padding: 10px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .news-card:hover {
+        transform: scale(1.05);
+    }
+
+    /* Fixed Image Size */
+    .news-image-container {
+        width: 100%;
+        height: 120px; /* Adjusted for compact view */
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .news-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Smooth Fade-in for Images */
+    .fade-img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .news-container {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    @media (max-width: 992px) {
+        .news-container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .news-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .news-container {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+
+    body {
+      font-size: 14px; /* Default smaller font */
+  }
+
+  /* Reduce News Title Size */
+  .news-title {
+      font-size: 16px; /* Smaller and readable */
+      font-weight: bold;
+  }
+
+  /* Reduce Header Sizes */
+  h1, h2 {
+      font-size: 22px;
+  }
+
+  h3 {
+      font-size: 18px;
+  }
+
+  /* Reduce Source and Date Text */
+  .news-source, .news-date {
+      font-size: 12px;
+      color: #777;
+  }
+</style>
+
 {% endblock %}
